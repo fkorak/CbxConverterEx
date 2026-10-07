@@ -5,6 +5,7 @@
 #endif
 
 #include "SourceFileItem.h"
+#include "ColumnLayout.h"
 #include "SettingsControl.xaml.h"
 #include "SettingsWindow.xaml.h"
 #include "ResizeControl.xaml.h"
@@ -63,6 +64,7 @@ namespace winrt::CbxConverter::implementation
 	{
 		// Xaml objects should not call InitializeComponent during construction.
 		// See https://github.com/microsoft/cppwinrt/tree/master/nuget#initializecomponent
+		layout = make<ColumnLayout>();	// must exist before x:Bind initialization
 	}
 
 	void MainWindow::InitializeComponent()
@@ -113,6 +115,7 @@ namespace winrt::CbxConverter::implementation
 	void MainWindow::ApplyWindowSettings()
 	{
 		const auto& s = app::AppState::Get().settings.mainWindow;
+		get_self<ColumnLayout>(layout)->FromString(s.columnWidths);
 		double scale = DpiScale();
 		Windows::Graphics::RectInt32 r{
 			static_cast<int32_t>(std::lround(s.posX * scale)), static_cast<int32_t>(std::lround(s.posY * scale)),
@@ -138,6 +141,7 @@ namespace winrt::CbxConverter::implementation
 		auto presenter = AppWindow().Presenter().try_as<OverlappedPresenter>();
 		if (!presenter)
 			return;
+		s.columnWidths = get_self<ColumnLayout>(layout)->ToString();
 		s.maximized = presenter.State() == OverlappedPresenterState::Maximized;
 		if (presenter.State() == OverlappedPresenterState::Restored)
 		{
@@ -244,7 +248,7 @@ namespace winrt::CbxConverter::implementation
 		file->size = fs::file_size(path, ec);
 		file->isPdf = isPdf;
 		file->tmpDir = MakeTmpDir(path);
-		items.Append(make<implementation::SourceFileItem>(file));
+		items.Append(make<implementation::SourceFileItem>(file, layout));
 		st.engine->AddUnpack(file, st.MakeJobConfig());
 	}
 
@@ -456,6 +460,46 @@ namespace winrt::CbxConverter::implementation
 				button.Content(box_value(title));
 			}
 		}
+	}
+
+	void MainWindow::OnGripperPressed(IInspectable const& sender, Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e)
+	{
+		auto gripper = sender.as<FrameworkElement>();
+		dragColumn = std::stoi(unbox_value<hstring>(gripper.Tag()).c_str());
+		dragStartX = e.GetCurrentPoint(HeaderGrid()).Position().X;
+		dragStartWidth = get_self<ColumnLayout>(layout)->Width(dragColumn);
+		gripper.CapturePointer(e.Pointer());
+		e.Handled(true);
+	}
+
+	void MainWindow::OnGripperMoved(IInspectable const&, Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e)
+	{
+		if (dragColumn < 0)
+			return;
+		double x = e.GetCurrentPoint(HeaderGrid()).Position().X;
+		get_self<ColumnLayout>(layout)->SetWidth(dragColumn, dragStartWidth + x - dragStartX);
+		e.Handled(true);
+	}
+
+	void MainWindow::OnGripperReleased(IInspectable const& sender, Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e)
+	{
+		if (dragColumn < 0)
+			return;
+		dragColumn = -1;
+		sender.as<UIElement>().ReleasePointerCapture(e.Pointer());
+		e.Handled(true);
+	}
+
+	void MainWindow::OnGripperCaptureLost(IInspectable const&, Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const&)
+	{
+		dragColumn = -1;
+	}
+
+	void MainWindow::OnGripperDoubleTapped(IInspectable const& sender, Microsoft::UI::Xaml::Input::DoubleTappedRoutedEventArgs const& e)
+	{
+		int column = std::stoi(unbox_value<hstring>(sender.as<FrameworkElement>().Tag()).c_str());
+		get_self<ColumnLayout>(layout)->Reset(column);
+		e.Handled(true);
 	}
 
 	void MainWindow::OnHeaderClick(IInspectable const& sender, RoutedEventArgs const&)

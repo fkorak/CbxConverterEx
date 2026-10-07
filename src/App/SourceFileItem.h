@@ -7,7 +7,9 @@ namespace winrt::CbxConverter::implementation
 {
 	struct SourceFileItem : SourceFileItemT<SourceFileItem>
 	{
-		explicit SourceFileItem(std::shared_ptr<cbx::SourceFile> file);
+		SourceFileItem(std::shared_ptr<cbx::SourceFile> file, CbxConverter::ColumnLayout layout);
+
+		CbxConverter::ColumnLayout Layout() const { return layout; }
 
 		hstring Name() const { return name; }
 		hstring FullPath() const { return fullPath; }
@@ -41,6 +43,7 @@ namespace winrt::CbxConverter::implementation
 		void Set(T& field, const T& value, const wchar_t* propertyName);
 
 		std::shared_ptr<cbx::SourceFile> file;
+		CbxConverter::ColumnLayout layout{ nullptr };
 		hstring name, fullPath, size, images, sizePerImage, imageWidth, resize, status, outSize, ratio;
 		double progress = 0;
 		bool progressVisible = false;

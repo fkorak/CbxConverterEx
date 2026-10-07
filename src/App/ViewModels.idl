@@ -1,8 +1,30 @@
 namespace CbxConverter
 {
+    /// Column widths of main file list, shared by header and all rows
+    runtimeclass ColumnLayout : Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+    {
+        Microsoft.UI.Xaml.GridLength Col0 { get; };
+        Microsoft.UI.Xaml.GridLength Col1 { get; };
+        Microsoft.UI.Xaml.GridLength Col2 { get; };
+        Microsoft.UI.Xaml.GridLength Col3 { get; };
+        Microsoft.UI.Xaml.GridLength Col4 { get; };
+        Microsoft.UI.Xaml.GridLength Col5 { get; };
+        Microsoft.UI.Xaml.GridLength Col6 { get; };
+        Microsoft.UI.Xaml.GridLength Col7 { get; };
+        Microsoft.UI.Xaml.GridLength Col8 { get; };
+    }
+
+    /// Column header resize handle (shows horizontal resize cursor)
+    [default_interface]
+    runtimeclass ColumnGripper : Microsoft.UI.Xaml.Controls.Grid
+    {
+        ColumnGripper();
+    }
+
     /// Row of main file list; created and refreshed from native code
     runtimeclass SourceFileItem : Microsoft.UI.Xaml.Data.INotifyPropertyChanged
     {
+        ColumnLayout Layout { get; };
         String Name { get; };
         String FullPath { get; };
         String Size { get; };

@@ -6,7 +6,7 @@
 
 namespace winrt::CbxConverter::implementation
 {
-	SourceFileItem::SourceFileItem(std::shared_ptr<cbx::SourceFile> f) : file(std::move(f))
+	SourceFileItem::SourceFileItem(std::shared_ptr<cbx::SourceFile> f, CbxConverter::ColumnLayout l) : file(std::move(f)), layout(std::move(l))
 	{
 		name = file->DisplayName();
 		fullPath = file->name.wstring();

@@ -159,6 +159,7 @@ previously new entry for default resizing rules could be added with down arrow -
 - Unicode file names are supported (e.g. "Lucky★Star v04.cbr"); names inside archives that are not marked as Unicode
   are read as UTF-8 if valid (archives from Linux/macOS), otherwise in the DOS code page (older Windows tools)
 - added Stop button, progress bars, natural sorting of file names, "Show output file in Explorer"
+- columns of the file list can be resized by dragging the dividers in the header (double click resets a column); widths are saved
 - added option to keep the original image if the converted one is not smaller
 - files and directories passed on the command line are added to the list
 - default worker thread count = number of logical processors

@@ -3,6 +3,8 @@ name: Build
 on:
   push:
     branches: [ master ]
+    # pushing a tag like v0.20 builds and publishes a GitHub release with the zipped application
+    tags: [ 'v*' ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -70,3 +72,41 @@ jobs:
             !bin/${{ matrix.platform }}/${{ matrix.configuration }}/*.exp
             !bin/${{ matrix.platform }}/${{ matrix.configuration }}/*.winmd
           if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check version
+        shell: pwsh
+        run: |
+          # tag must match the version compiled into the application (src/App/resource.h)
+          $tag = "${{ github.ref_name }}".TrimStart('v')
+          $line = Select-String -Path src/App/resource.h -Pattern '#define CBX_VERSION_STRING\s+"([^"]+)"'
+          $version = $line.Matches[0].Groups[1].Value
+          if ($tag -ne $version) {
+            Write-Error "Tag ${{ github.ref_name }} does not match CBX_VERSION_STRING $version in src/App/resource.h"
+            exit 1
+          }
+
+      - name: Download application
+        uses: actions/download-artifact@v4
+        with:
+          name: CbxConverterEx-x64-${{ github.sha }}
+          path: CbxConverterEx
+
+      - name: Create zip
+        shell: pwsh
+        run: Compress-Archive -Path CbxConverterEx -DestinationPath "CbxConverterEx-${{ github.ref_name }}-x64.zip"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" "CbxConverterEx-${{ github.ref_name }}-x64.zip" --title "CbxConverterEx ${{ github.ref_name }}" --generate-notes

@@ -201,6 +201,7 @@ bool Settings::Read(const std::filesystem::path& fileName)
 	mainWindow.posY = ini.ReadInt(L"frmMain", L"AppPositionY", mainWindow.posY);
 	mainWindow.maximized = ini.ReadBool(L"frmMain", L"Maximized", false);
 	mainWindow.alwaysOnTop = ini.ReadBool(L"frmMain", L"AlwaysOnTop", false);
+	mainWindow.columnWidths = ini.ReadString(L"frmMain", L"ColumnWidths", L"");
 
 	logging.logToFile = ini.ReadBool(L"Logging", L"LogToFile", false);
 	logging.maxUiLogLines = ini.ReadInt(L"Logging", L"MaxUiLogLines", 1000);
@@ -285,6 +286,7 @@ bool Settings::Write(const std::filesystem::path& fileName) const
 	ini.WriteInt(L"frmMain", L"AppPositionY", mainWindow.posY);
 	ini.WriteBool(L"frmMain", L"Maximized", mainWindow.maximized);
 	ini.WriteBool(L"frmMain", L"AlwaysOnTop", mainWindow.alwaysOnTop);
+	ini.WriteString(L"frmMain", L"ColumnWidths", mainWindow.columnWidths);
 
 	ini.WriteBool(L"Logging", L"LogToFile", logging.logToFile);
 	ini.WriteInt(L"Logging", L"MaxUiLogLines", logging.maxUiLogLines);

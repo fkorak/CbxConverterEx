@@ -22,6 +22,7 @@ public:
 		int width = 1100, height = 700;
 		bool maximized = false;
 		bool alwaysOnTop = false;
+		std::wstring columnWidths;	///< file list column widths (DIP), comma separated; empty = defaults
 	} mainWindow;
 
 	struct Logging

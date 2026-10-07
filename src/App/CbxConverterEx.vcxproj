@@ -160,6 +160,9 @@
     <ClInclude Include="SourceFileItem.h">
       <DependentUpon>ViewModels.idl</DependentUpon>
     </ClInclude>
+    <ClInclude Include="ColumnLayout.h">
+      <DependentUpon>ViewModels.idl</DependentUpon>
+    </ClInclude>
     <ClInclude Include="RenameItem.h">
       <DependentUpon>ViewModels.idl</DependentUpon>
     </ClInclude>
@@ -203,6 +206,9 @@
       <DependentUpon>LogWindow.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="SourceFileItem.cpp">
+      <DependentUpon>ViewModels.idl</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="ColumnLayout.cpp">
       <DependentUpon>ViewModels.idl</DependentUpon>
     </ClCompile>
     <ClCompile Include="RenameItem.cpp">

@@ -37,6 +37,14 @@ namespace winrt::CbxConverter::implementation
 		winrt::fire_and_forget OnDeleteOutputFiles(IInspectable const&, Microsoft::UI::Xaml::RoutedEventArgs const&);
 		void OnClearConverted(IInspectable const&, Microsoft::UI::Xaml::RoutedEventArgs const&);
 
+		// column resizing
+		CbxConverter::ColumnLayout Layout() const { return layout; }
+		void OnGripperPressed(IInspectable const& sender, Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
+		void OnGripperMoved(IInspectable const& sender, Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
+		void OnGripperReleased(IInspectable const& sender, Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
+		void OnGripperCaptureLost(IInspectable const& sender, Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
+		void OnGripperDoubleTapped(IInspectable const& sender, Microsoft::UI::Xaml::Input::DoubleTappedRoutedEventArgs const& e);
+
 		// drag & drop
 		void OnDragOver(IInspectable const&, Microsoft::UI::Xaml::DragEventArgs const& e);
 		winrt::fire_and_forget OnDrop(IInspectable const&, Microsoft::UI::Xaml::DragEventArgs const& e);
@@ -64,6 +72,10 @@ namespace winrt::CbxConverter::implementation
 		void RemoveItems(const std::vector<CbxConverter::SourceFileItem>& toRemove);
 
 		Windows::Foundation::Collections::IObservableVector<CbxConverter::SourceFileItem> items;
+		CbxConverter::ColumnLayout layout{ nullptr };
+		int dragColumn = -1;
+		double dragStartX = 0;
+		double dragStartWidth = 0;
 		Microsoft::UI::Dispatching::DispatcherQueueTimer refreshTimer{ nullptr };
 		CbxConverter::LogWindow logWindow{ nullptr };
 		bool wasIdle = true;
