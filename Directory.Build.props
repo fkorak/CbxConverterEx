@@ -1,0 +1,19 @@
+<Project>
+  <!--
+    Shared settings for all projects.
+    Dependencies come from vcpkg (manifest mode, see vcpkg.json). The vcpkg instance bundled
+    with Visual Studio is used unless VCPKG_ROOT points to a standalone checkout.
+  -->
+  <PropertyGroup>
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+    <VcpkgManifestRoot>$(MSBuildThisFileDirectory)</VcpkgManifestRoot>
+    <VcpkgInstalledDir>$(MSBuildThisFileDirectory)vcpkg_installed\</VcpkgInstalledDir>
+    <!-- static libraries, dynamic CRT: single exe, no vcpkg DLLs to deploy -->
+    <VcpkgTriplet Condition="'$(Platform)' == 'x64'">x64-windows-cbx</VcpkgTriplet>
+    <VcpkgTriplet Condition="'$(Platform)' == 'ARM64'">arm64-windows-cbx</VcpkgTriplet>
+    <CbxVcpkgRoot Condition="'$(VCPKG_ROOT)' != ''">$(VCPKG_ROOT)\</CbxVcpkgRoot>
+    <CbxVcpkgRoot Condition="'$(CbxVcpkgRoot)' == ''">$(VsInstallRoot)\VC\vcpkg\</CbxVcpkgRoot>
+    <CbxSrcDir>$(MSBuildThisFileDirectory)src\</CbxSrcDir>
+  </PropertyGroup>
+  <Import Project="$(CbxVcpkgRoot)scripts\buildsystems\msbuild\vcpkg.props" Condition="Exists('$(CbxVcpkgRoot)scripts\buildsystems\msbuild\vcpkg.props')" />
+</Project>

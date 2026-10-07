@@ -139,4 +139,27 @@ previously new entry for default resizing rules could be added with down arrow -
 	- option to open selected image in default viewer
 - default worker thread count is now set to half of the number of processors reported by GetSystemInfo()
 - maximum number of worker thread increased to 64
+
+0.20 (CbxConverterEx, modified by Fabian Korak / github.com/fkorak, developed with AI assistance: Claude Code by Anthropic)
+- renamed to CbxConverterEx to mark it as a modified version; CbxConverter.ini from the same directory is imported on first start
+- ported from C++Builder/VCL to Visual Studio: native C++20, WinUI 3 (Windows App SDK) user interface
+	- dependencies are managed by vcpkg (images, archives) and NuGet (Windows App SDK) instead of bundled executables
+- images are converted in-process (libwebp, libjpeg-turbo, libpng, stb) instead of running magick.exe for each image
+	- images of all archives are converted in parallel by a shared thread pool - a single archive now uses all cores
+	- image dimensions are read from file headers instead of decoding whole images with "magick identify"
+	- JPEG images that are downscaled anyway are decoded at reduced size (DCT scaling)
+	- grayscale images are encoded directly as WebP luma, fully opaque alpha channels are dropped
+	- free-form ImageMagick parameters are replaced by output format, quality, WebP effort and lossless settings;
+	  quality is migrated from "-quality N" in ImExtraParams
+- archives are unpacked and packed with libarchive (zip/rar/rar5/7z/tar); 7z.exe is only used as fallback (e.g. encrypted rar)
+- FIXED: worker thread setting above 16 was ignored
+- FIXED: converting the same archive could start while it was still being unpacked
+- FIXED: renaming pattern is no longer passed directly to sprintf
+- FIXED: source files with the same name in different directories no longer share a temporary directory
+- Unicode file names are supported (e.g. "Lucky★Star v04.cbr"); names inside archives that are not marked as Unicode
+  are read as UTF-8 if valid (archives from Linux/macOS), otherwise in the DOS code page (older Windows tools)
+- added Stop button, progress bars, natural sorting of file names, "Show output file in Explorer"
+- added option to keep the original image if the converted one is not smaller
+- files and directories passed on the command line are added to the list
+- default worker thread count = number of logical processors
 */

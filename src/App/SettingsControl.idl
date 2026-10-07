@@ -1,0 +1,8 @@
+namespace CbxConverter
+{
+    [default_interface]
+    runtimeclass SettingsControl : Microsoft.UI.Xaml.Controls.UserControl
+    {
+        SettingsControl();
+    }
+}

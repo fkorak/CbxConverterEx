@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- NuGet packages (packages.config) are restored to <solution dir>\packages -->
+  <PropertyGroup>
+    <CbxPackages>$(MSBuildThisFileDirectory)..\..\packages\</CbxPackages>
+    <CbxPkgCppWinRT>$(CbxPackages)Microsoft.Windows.CppWinRT.3.0.260818.1\</CbxPkgCppWinRT>
+    <CbxPkgWil>$(CbxPackages)Microsoft.Windows.ImplementationLibrary.1.0.260126.7\</CbxPkgWil>
+    <CbxPkgWebView2>$(CbxPackages)Microsoft.Web.WebView2.1.0.3719.77\</CbxPkgWebView2>
+    <CbxPkgSdkBuildTools>$(CbxPackages)Microsoft.Windows.SDK.BuildTools.10.0.26100.4654\</CbxPkgSdkBuildTools>
+    <CbxPkgSdkBuildToolsMsix>$(CbxPackages)Microsoft.Windows.SDK.BuildTools.MSIX.1.7.251221100\</CbxPkgSdkBuildToolsMsix>
+    <CbxPkgBase>$(CbxPackages)Microsoft.WindowsAppSDK.Base.2.0.4\</CbxPkgBase>
+    <CbxPkgInteractive>$(CbxPackages)Microsoft.WindowsAppSDK.InteractiveExperiences.2.1.9\</CbxPkgInteractive>
+    <CbxPkgFoundation>$(CbxPackages)Microsoft.WindowsAppSDK.Foundation.2.3.12\</CbxPkgFoundation>
+    <CbxPkgDWrite>$(CbxPackages)Microsoft.WindowsAppSDK.DWrite.2.1.0\</CbxPkgDWrite>
+    <CbxPkgWinUI>$(CbxPackages)Microsoft.WindowsAppSDK.WinUI.2.3.9\</CbxPkgWinUI>
+    <CbxPkgRuntime>$(CbxPackages)Microsoft.WindowsAppSDK.Runtime.2.5.1\</CbxPkgRuntime>
+  </PropertyGroup>
+  <Import Project="$(CbxPkgCppWinRT)build\native\Microsoft.Windows.CppWinRT.props" Condition="Exists('$(CbxPkgCppWinRT)build\native\Microsoft.Windows.CppWinRT.props')" />
+  <Import Project="$(CbxPkgSdkBuildTools)build\Microsoft.Windows.SDK.BuildTools.props" Condition="Exists('$(CbxPkgSdkBuildTools)build\Microsoft.Windows.SDK.BuildTools.props')" />
+  <Import Project="$(CbxPkgSdkBuildToolsMsix)build\Microsoft.Windows.SDK.BuildTools.MSIX.props" Condition="Exists('$(CbxPkgSdkBuildToolsMsix)build\Microsoft.Windows.SDK.BuildTools.MSIX.props')" />
+  <Import Project="$(CbxPkgBase)build\native\Microsoft.WindowsAppSDK.Base.props" Condition="Exists('$(CbxPkgBase)build\native\Microsoft.WindowsAppSDK.Base.props')" />
+  <Import Project="$(CbxPkgInteractive)build\native\Microsoft.WindowsAppSDK.InteractiveExperiences.props" Condition="Exists('$(CbxPkgInteractive)build\native\Microsoft.WindowsAppSDK.InteractiveExperiences.props')" />
+  <Import Project="$(CbxPkgFoundation)build\native\Microsoft.WindowsAppSDK.Foundation.props" Condition="Exists('$(CbxPkgFoundation)build\native\Microsoft.WindowsAppSDK.Foundation.props')" />
+  <Import Project="$(CbxPkgDWrite)build\Microsoft.WindowsAppSDK.DWrite.props" Condition="Exists('$(CbxPkgDWrite)build\Microsoft.WindowsAppSDK.DWrite.props')" />
+  <Import Project="$(CbxPkgWinUI)build\native\Microsoft.WindowsAppSDK.WinUI.props" Condition="Exists('$(CbxPkgWinUI)build\native\Microsoft.WindowsAppSDK.WinUI.props')" />
+  <Import Project="$(CbxPkgRuntime)build\native\Microsoft.WindowsAppSDK.Runtime.props" Condition="Exists('$(CbxPkgRuntime)build\native\Microsoft.WindowsAppSDK.Runtime.props')" />
+  <PropertyGroup Label="Globals">
+    <CppWinRTOptimized>true</CppWinRTOptimized>
+    <CppWinRTRootNamespaceAutoMerge>true</CppWinRTRootNamespaceAutoMerge>
+    <MinimalCoreWin>true</MinimalCoreWin>
+    <ProjectGuid>{54C5C2C7-0C0E-488A-88B1-2805491EF60E}</ProjectGuid>
+    <ProjectName>CbxConverterEx</ProjectName>
+    <RootNamespace>CbxConverter</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
+    <AppContainerApplication>false</AppContainerApplication>
+    <AppxPackage>false</AppxPackage>
+    <ApplicationType>Windows Store</ApplicationType>
+    <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
+    <WindowsTargetPlatformVersion Condition=" '$(WindowsTargetPlatformVersion)' == '' ">10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.19041.0</WindowsTargetPlatformMinVersion>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <!--
+      Unpackaged app. By default it uses the shared Windows App Runtime (small output); RuntimeBootstrap.cpp
+      offers to install the runtime on first start if it is missing.
+      Build with -p:CbxSelfContained=true to bundle the runtime instead (~150 MB, no installation needed).
+    -->
+    <WindowsPackageType>None</WindowsPackageType>
+    <CbxSelfContained Condition="'$(CbxSelfContained)' == ''">false</CbxSelfContained>
+    <WindowsAppSDKSelfContained>$(CbxSelfContained)</WindowsAppSDKSelfContained>
+    <WindowsAppSdkBootstrapInitialize>false</WindowsAppSdkBootstrapInitialize>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <DesktopCompatible>true</DesktopCompatible>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir>$(MSBuildThisFileDirectory)..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level4</WarningLevel>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(CbxSrcDir)Core;$(MSBuildThisFileDirectory);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;_CRT_SECURE_NO_WARNINGS;DISABLE_XAML_GENERATED_MAIN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(CbxSelfContained)' == 'true'">CBX_SELF_CONTAINED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj /utf-8</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>shell32.lib;ole32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+    <ClCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Manifest Include="app.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="AppState.h" />
+    <ClInclude Include="Dialogs.h" />
+    <ClInclude Include="LogBuffer.h" />
+    <ClInclude Include="App.xaml.h">
+      <DependentUpon>App.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="MainWindow.xaml.h">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="SettingsControl.xaml.h">
+      <DependentUpon>SettingsControl.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="ResizeControl.xaml.h">
+      <DependentUpon>ResizeControl.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="RenameControl.xaml.h">
+      <DependentUpon>RenameControl.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="SettingsWindow.xaml.h">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="LogWindow.xaml.h">
+      <DependentUpon>LogWindow.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="SourceFileItem.h">
+      <DependentUpon>ViewModels.idl</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="RenameItem.h">
+      <DependentUpon>ViewModels.idl</DependentUpon>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml" />
+    <Page Include="MainWindow.xaml" />
+    <Page Include="SettingsControl.xaml" />
+    <Page Include="ResizeControl.xaml" />
+    <Page Include="RenameControl.xaml" />
+    <Page Include="LogWindow.xaml" />
+    <Page Include="SettingsWindow.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="AppState.cpp" />
+    <ClCompile Include="RuntimeBootstrap.cpp" />
+    <ClCompile Include="Dialogs.cpp" />
+    <ClCompile Include="LogBuffer.cpp" />
+    <ClCompile Include="App.xaml.cpp">
+      <DependentUpon>App.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="MainWindow.xaml.cpp">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="SettingsControl.xaml.cpp">
+      <DependentUpon>SettingsControl.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="ResizeControl.xaml.cpp">
+      <DependentUpon>ResizeControl.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="RenameControl.xaml.cpp">
+      <DependentUpon>RenameControl.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="SettingsWindow.xaml.cpp">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="LogWindow.xaml.cpp">
+      <DependentUpon>LogWindow.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="SourceFileItem.cpp">
+      <DependentUpon>ViewModels.idl</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="RenameItem.cpp">
+      <DependentUpon>ViewModels.idl</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="ViewModels.idl" />
+    <Midl Include="MainWindow.idl">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Midl>
+    <Midl Include="SettingsControl.idl">
+      <DependentUpon>SettingsControl.xaml</DependentUpon>
+    </Midl>
+    <Midl Include="ResizeControl.idl">
+      <DependentUpon>ResizeControl.xaml</DependentUpon>
+    </Midl>
+    <Midl Include="RenameControl.idl">
+      <DependentUpon>RenameControl.xaml</DependentUpon>
+    </Midl>
+    <Midl Include="SettingsWindow.idl">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Midl>
+    <Midl Include="LogWindow.idl">
+      <DependentUpon>LogWindow.xaml</DependentUpon>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CbxConverterEx.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\CbxConverterEx.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{9F24950D-53E6-4700-97A5-EBA4023D8899}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(CbxPkgWebView2)build\native\Microsoft.Web.WebView2.targets" Condition="Exists('$(CbxPkgWebView2)build\native\Microsoft.Web.WebView2.targets')" />
+    <Import Project="$(CbxPkgCppWinRT)build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('$(CbxPkgCppWinRT)build\native\Microsoft.Windows.CppWinRT.targets')" />
+    <Import Project="$(CbxPkgWil)build\native\Microsoft.Windows.ImplementationLibrary.targets" Condition="Exists('$(CbxPkgWil)build\native\Microsoft.Windows.ImplementationLibrary.targets')" />
+    <Import Project="$(CbxPkgSdkBuildTools)build\Microsoft.Windows.SDK.BuildTools.targets" Condition="Exists('$(CbxPkgSdkBuildTools)build\Microsoft.Windows.SDK.BuildTools.targets')" />
+    <Import Project="$(CbxPkgSdkBuildToolsMsix)build\Microsoft.Windows.SDK.BuildTools.MSIX.targets" Condition="Exists('$(CbxPkgSdkBuildToolsMsix)build\Microsoft.Windows.SDK.BuildTools.MSIX.targets')" />
+    <Import Project="$(CbxPkgBase)build\native\Microsoft.WindowsAppSDK.Base.targets" Condition="Exists('$(CbxPkgBase)build\native\Microsoft.WindowsAppSDK.Base.targets')" />
+    <Import Project="$(CbxPkgInteractive)build\native\Microsoft.WindowsAppSDK.InteractiveExperiences.targets" Condition="Exists('$(CbxPkgInteractive)build\native\Microsoft.WindowsAppSDK.InteractiveExperiences.targets')" />
+    <Import Project="$(CbxPkgFoundation)build\native\Microsoft.WindowsAppSDK.Foundation.targets" Condition="Exists('$(CbxPkgFoundation)build\native\Microsoft.WindowsAppSDK.Foundation.targets')" />
+    <Import Project="$(CbxPkgDWrite)build\Microsoft.WindowsAppSDK.DWrite.targets" Condition="Exists('$(CbxPkgDWrite)build\Microsoft.WindowsAppSDK.DWrite.targets')" />
+    <Import Project="$(CbxPkgWinUI)build\native\Microsoft.WindowsAppSDK.WinUI.targets" Condition="Exists('$(CbxPkgWinUI)build\native\Microsoft.WindowsAppSDK.WinUI.targets')" />
+    <Import Project="$(CbxPkgRuntime)build\native\Microsoft.WindowsAppSDK.Runtime.targets" Condition="Exists('$(CbxPkgRuntime)build\native\Microsoft.WindowsAppSDK.Runtime.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore (right-click the solution, "Restore NuGet Packages") or run "nuget restore CbxConverterEx.sln". The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(CbxPkgCppWinRT)build\native\Microsoft.Windows.CppWinRT.props')" Text="$([System.String]::Format('$(ErrorText)', '$(CbxPkgCppWinRT)build\native\Microsoft.Windows.CppWinRT.props'))" />
+    <Error Condition="!Exists('$(CbxPkgWinUI)build\native\Microsoft.WindowsAppSDK.WinUI.props')" Text="$([System.String]::Format('$(ErrorText)', '$(CbxPkgWinUI)build\native\Microsoft.WindowsAppSDK.WinUI.props'))" />
+    <Error Condition="!Exists('$(CbxPkgFoundation)build\native\Microsoft.WindowsAppSDK.Foundation.props')" Text="$([System.String]::Format('$(ErrorText)', '$(CbxPkgFoundation)build\native\Microsoft.WindowsAppSDK.Foundation.props'))" />
+    <Error Condition="!Exists('$(CbxPkgRuntime)build\native\Microsoft.WindowsAppSDK.Runtime.props')" Text="$([System.String]::Format('$(ErrorText)', '$(CbxPkgRuntime)build\native\Microsoft.WindowsAppSDK.Runtime.props'))" />
+  </Target>
+</Project>

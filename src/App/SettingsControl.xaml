@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CbxConverter.SettingsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <UserControl.Resources>
+        <Style x:Key="HintStyle" TargetType="TextBlock">
+            <Setter Property="Opacity" Value="0.7" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <SelectorBar x:Name="Sections" SelectionChanged="OnSectionChanged">
+            <SelectorBarItem Text="General" Tag="0" IsSelected="True" />
+            <SelectorBarItem Text="Conversion" Tag="1" />
+            <SelectorBarItem Text="Resizing" Tag="2" />
+            <SelectorBarItem Text="Archives &amp; PDF" Tag="3" />
+            <SelectorBarItem Text="Directories" Tag="4" />
+            <SelectorBarItem Text="Logging" Tag="5" />
+        </SelectorBar>
+
+        <ScrollViewer Grid.Row="1" Padding="0,0,16,0">
+            <Grid>
+                <!-- General -->
+                <StackPanel x:Name="PageGeneral" Spacing="14">
+                    <StackPanel Spacing="4">
+                        <NumberBox x:Name="ThreadCountBox" Header="Worker threads (images converted in parallel)"
+                                   Minimum="1" Maximum="256" SmallChange="1" LargeChange="4" Width="320" HorizontalAlignment="Left"
+                                   SpinButtonPlacementMode="Inline" ValidationMode="InvalidInputOverwritten" />
+                        <TextBlock x:Name="ThreadCountHint" Style="{StaticResource HintStyle}" />
+                    </StackPanel>
+                    <ComboBox x:Name="PriorityCombo" Header="Worker priority" Width="320">
+                        <x:String>idle</x:String>
+                        <x:String>below normal (recommended)</x:String>
+                        <x:String>normal</x:String>
+                        <x:String>above normal (not recommended)</x:String>
+                    </ComboBox>
+                    <CheckBox x:Name="PlaySoundCheck" Content="Play sound when done" />
+                    <CheckBox x:Name="AlwaysOnTopCheck" Content="Window always on top" />
+                </StackPanel>
+
+                <!-- Conversion -->
+                <StackPanel x:Name="PageConversion" Spacing="10" Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <ComboBox x:Name="FormatCombo" Header="Output format" Width="170" SelectionChanged="OnFormatChanged">
+                            <x:String>WebP</x:String>
+                            <x:String>JPEG</x:String>
+                            <x:String>PNG (lossless)</x:String>
+                        </ComboBox>
+                        <NumberBox x:Name="QualityBox" Header="Quality (1-100)" Minimum="1" Maximum="100" SmallChange="1" LargeChange="5"
+                                   Width="150" SpinButtonPlacementMode="Inline" ValidationMode="InvalidInputOverwritten" />
+                        <Slider x:Name="WebpMethodSlider" Header="WebP effort (0 fast - 6 small)" Minimum="0" Maximum="6" StepFrequency="1"
+                                TickFrequency="1" TickPlacement="Outside" Width="260" />
+                    </StackPanel>
+                    <StackPanel x:Name="WebpOptions" Spacing="6">
+                        <TextBlock Style="{StaticResource HintStyle}"
+                                   Text="WebP effort 4 is the libwebp default; 2-3 are noticeably faster with slightly larger files." />
+                        <CheckBox x:Name="WebpLosslessCheck" Content="Lossless WebP (quality then sets compression effort)" />
+                    </StackPanel>
+                    <CheckBox x:Name="KeepOriginalCheck" Content="Keep original image if converted image is not smaller (only when not resizing)" />
+                    <TextBox x:Name="FilesToSkipBox" Header="Files to skip (file name masks separated by semicolon, e.g. *.webp or *.webp;*.nfo)" />
+                </StackPanel>
+
+                <!-- Default resizing -->
+                <StackPanel x:Name="PageResizing" Spacing="14" Visibility="Collapsed">
+                    <StackPanel Spacing="6">
+                        <TextBlock Style="{StaticResource HintStyle}"
+                                   Text="Default resizing rules are applied after unpacking, based on the most common image width in the archive. Resizing can be changed per file in the list (right click > Resize)." />
+                        <Grid ColumnSpacing="8" Width="420" HorizontalAlignment="Left">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Most common width [px]" Style="{StaticResource HintStyle}" />
+                            <TextBlock Grid.Column="1" Text="Resize to [%]" Style="{StaticResource HintStyle}" />
+                        </Grid>
+                        <StackPanel x:Name="ResizeRulesPanel" Spacing="6" />
+                        <Button x:Name="AddRuleButton" Click="OnAddRule">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE710;" FontSize="12" />
+                                <TextBlock Text="Add rule" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Archives & PDF -->
+                <StackPanel x:Name="PageArchives" Spacing="14" Visibility="Collapsed">
+                    <PasswordBox x:Name="UnpackPasswordBox" Header="Password for unpacking source files (if required)" Width="420" HorizontalAlignment="Left" />
+                    <CheckBox x:Name="CopyOnErrorCheck" Content="Copy source file directly to output directory on conversion error (e.g. invalid password)" />
+                    <StackPanel Spacing="4">
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="SevenZipBox" Header="7z.exe location (optional)" PlaceholderText="auto-detect" />
+                            <Button Grid.Column="1" Content="..." VerticalAlignment="Bottom" Click="OnBrowse7z" />
+                        </Grid>
+                        <TextBlock x:Name="SevenZipHint" Style="{StaticResource HintStyle}" />
+                    </StackPanel>
+
+                    <TextBlock Text="PDF import" FontWeight="SemiBold" Margin="0,8,0,0" />
+                    <TextBlock Style="{StaticResource HintStyle}"
+                               Text="PDF import requires GhostScript for Windows. PDF files are rendered by default in high resolution to improve font quality; scaling rendered files down to 50% or less is recommended." />
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="GsLocationBox" Header="gswin64c.exe location" />
+                        <Button Grid.Column="1" Content="..." VerticalAlignment="Bottom" Click="OnBrowseGs" />
+                    </Grid>
+                    <TextBox x:Name="GsParamsBox" Header="Parameters" />
+                    <TextBox x:Name="GsPatternBox" Header="Image files pattern" Width="320" HorizontalAlignment="Left" />
+                </StackPanel>
+
+                <!-- Directories -->
+                <StackPanel x:Name="PageDirectories" Spacing="14" Visibility="Collapsed">
+                    <ComboBox x:Name="TmpDirTypeCombo" Header="Temporary directory location" Width="320" SelectionChanged="OnDirectoryOptionChanged" />
+                    <Grid x:Name="TmpDirRow" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TmpDirBox" />
+                        <Button Grid.Column="1" Content="..." Click="OnBrowseTmpDir" />
+                    </Grid>
+                    <CheckBox x:Name="UseSourceDirCheck" Content="Use source directory as output directory, adding extra extension to file name (e.g. AAA.webp.cbz)"
+                              Click="OnDirectoryOptionChanged" />
+                    <ComboBox x:Name="OutDirTypeCombo" Header="Output directory location" Width="320" SelectionChanged="OnDirectoryOptionChanged" />
+                    <Grid x:Name="OutDirRow" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="OutDirBox" />
+                        <Button x:Name="OutDirBrowseButton" Grid.Column="1" Content="..." Click="OnBrowseOutDir" />
+                    </Grid>
+                    <CheckBox x:Name="RecreateDirsCheck" Content="Recreate source directory structure if directory is added as source" />
+                    <CheckBox x:Name="NumericTmpCheck" Content="Use numeric tmp file directory (reducing total path length)" />
+                </StackPanel>
+
+                <!-- Logging -->
+                <StackPanel x:Name="PageLogging" Spacing="14" Visibility="Collapsed">
+                    <CheckBox x:Name="LogToFileCheck" Content="Log to file (CbxConverterEx.log next to executable)" />
+                    <ComboBox x:Name="LogLinesCombo" Header="Visible (buffered) log lines in log window" Width="320">
+                        <x:String>100</x:String>
+                        <x:String>200</x:String>
+                        <x:String>500</x:String>
+                        <x:String>1000</x:String>
+                        <x:String>2000</x:String>
+                        <x:String>5000</x:String>
+                        <x:String>10000</x:String>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

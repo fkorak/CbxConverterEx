@@ -1,0 +1,30 @@
+namespace CbxConverter
+{
+    /// Row of main file list; created and refreshed from native code
+    runtimeclass SourceFileItem : Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+    {
+        String Name { get; };
+        String FullPath { get; };
+        String Size { get; };
+        String Images { get; };
+        String SizePerImage { get; };
+        String ImageWidth { get; };
+        String Resize { get; };
+        String Status { get; };
+        String OutSize { get; };
+        String Ratio { get; };
+        Double Progress { get; };
+        Boolean ProgressVisible { get; };
+        Boolean IsError { get; };
+    }
+
+    /// Row of image renaming list
+    runtimeclass RenameItem : Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+    {
+        String OldName { get; };
+        String NewName { get; };
+        String Size { get; };
+        String ImageWidth { get; };
+        String ImageHeight { get; };
+    }
+}

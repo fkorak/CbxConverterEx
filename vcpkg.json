@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "cbxconverter",
+  "version-string": "1.0.0",
+  "description": "Converter for cbr/cbz/cb7/cbt and pdf comic book files",
+  "builtin-baseline": "2cfff9c458d9dcf642e9fa09ba624f9931bb5358",
+  "dependencies": [
+    {
+      "name": "libarchive",
+      "default-features": false,
+      "features": [ "bzip2", "lzma", "zstd" ]
+    },
+    "libjpeg-turbo",
+    {
+      "name": "libwebp",
+      "features": [ "libwebpmux" ]
+    },
+    "libpng",
+    "stb"
+  ]
+}

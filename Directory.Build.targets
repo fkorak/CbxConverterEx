@@ -1,0 +1,7 @@
+<Project>
+  <Import Project="$(CbxVcpkgRoot)scripts\buildsystems\msbuild\vcpkg.targets" Condition="Exists('$(CbxVcpkgRoot)scripts\buildsystems\msbuild\vcpkg.targets')" />
+  <Target Name="CbxCheckVcpkg" BeforeTargets="PrepareForBuild">
+    <Error Condition="!Exists('$(CbxVcpkgRoot)scripts\buildsystems\msbuild\vcpkg.targets')"
+           Text="vcpkg not found. Install the 'vcpkg package manager' component in the Visual Studio Installer or set VCPKG_ROOT." />
+  </Target>
+</Project>

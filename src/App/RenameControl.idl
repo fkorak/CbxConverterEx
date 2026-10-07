@@ -1,0 +1,8 @@
+namespace CbxConverter
+{
+    [default_interface]
+    runtimeclass RenameControl : Microsoft.UI.Xaml.Controls.UserControl
+    {
+        RenameControl();
+    }
+}

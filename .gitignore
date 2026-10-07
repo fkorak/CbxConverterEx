@@ -9,3 +9,12 @@
 *.depend
 tSIP.todo
 .i18n-editor-metadata
+# Visual Studio / MSBuild
+.vs/
+*.user
+bin/
+**/x64/
+**/ARM64/
+**/Generated Files/
+packages/
+vcpkg_installed/
