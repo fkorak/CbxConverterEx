@@ -348,7 +348,7 @@ namespace winrt::CbxConverter::implementation
 		if (errors)
 			status += std::format(L", {} error(s)", errors);
 		if (!idle)
-			status += std::format(L"  —  working ({} threads)", st.engine->GetThreadCount());
+			status += std::format(L"  —  working ({} thread{})", st.engine->GetThreadCount(), st.engine->GetThreadCount() == 1 ? L"" : L"s");
 		StatusText().Text(status);
 
 		if (idle && !wasIdle)

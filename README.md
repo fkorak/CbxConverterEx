@@ -1,6 +1,6 @@
 # CbxConverterEx - converter for cbr/cbz and pdf files
 
-This is vibe-code Modified version of [CbxConverter](https://tomeko.net/software/CbxConverter) by Tomasz Ostrowski
+This is vibe-code modified version of [CbxConverter](https://tomeko.net/software/CbxConverter) by Tomasz Ostrowski
 (GPL v2): ported to Visual Studio / WinUI 3, images are converted in-process using all CPU cores.
 
 CbxConverterEx is maintained by Fabian Korak ([@fkorak](https://github.com/fkorak)).
@@ -11,7 +11,7 @@ tl;dr I vibe-coded my way out of some performance problems when converting large
 > [Claude Code](https://claude.com/claude-code), Anthropic's AI coding assistant, directed by Fabian Korak.
 > See [AI assistance](#ai-assistance) below.
 
-![CbxConverter](https://tomeko.net/software/CbxConverter/CbxConverter_0_10.png) 
+![CbxConverterEx converting four comic archives with 16 threads](doc/screenshot.png)
 
 Original program: https://tomeko.net/software/CbxConverter
 

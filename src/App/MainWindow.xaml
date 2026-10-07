@@ -84,14 +84,14 @@
               BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="160" />
-                <ColumnDefinition Width="80" />
-                <ColumnDefinition Width="64" />
-                <ColumnDefinition Width="84" />
-                <ColumnDefinition Width="160" />
-                <ColumnDefinition Width="110" />
-                <ColumnDefinition Width="210" />
-                <ColumnDefinition Width="90" />
                 <ColumnDefinition Width="76" />
+                <ColumnDefinition Width="60" />
+                <ColumnDefinition Width="72" />
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="96" />
+                <ColumnDefinition Width="170" />
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="70" />
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Tag="0" Style="{StaticResource HeaderButtonStyle}" Click="OnHeaderClick" Content="Source file" />
             <Button Grid.Column="1" Tag="1" Style="{StaticResource HeaderButtonStyle}" HorizontalContentAlignment="Right" Click="OnHeaderClick" Content="Size [kB]" />
@@ -118,14 +118,14 @@
                     <Grid ToolTipService.ToolTip="{x:Bind FullPath}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" MinWidth="160" />
-                            <ColumnDefinition Width="80" />
-                            <ColumnDefinition Width="64" />
-                            <ColumnDefinition Width="84" />
-                            <ColumnDefinition Width="160" />
-                            <ColumnDefinition Width="110" />
-                            <ColumnDefinition Width="210" />
-                            <ColumnDefinition Width="90" />
                             <ColumnDefinition Width="76" />
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="72" />
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="96" />
+                            <ColumnDefinition Width="170" />
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="70" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Style="{StaticResource CellStyle}" Text="{x:Bind Name}" />
                         <TextBlock Grid.Column="1" Style="{StaticResource NumberCellStyle}" Text="{x:Bind Size, Mode=OneWay}" />

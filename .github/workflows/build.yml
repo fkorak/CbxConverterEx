@@ -1,0 +1,72 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        platform: [ x64 ]
+        configuration: [ Release ]
+
+    env:
+      # compiled vcpkg dependencies are cached between runs (first build takes ~15 min)
+      VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}\vcpkg-cache,readwrite
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Set up vcpkg
+        shell: pwsh
+        run: |
+          # use the vcpkg checkout preinstalled on the runner, updated so that the
+          # builtin-baseline commit from vcpkg.json is available
+          $root = $env:VCPKG_INSTALLATION_ROOT
+          git -C $root fetch --quiet origin
+          git -C $root checkout --quiet origin/master
+          & "$root\bootstrap-vcpkg.bat" -disableMetrics
+          "VCPKG_ROOT=$root" >> $env:GITHUB_ENV
+          New-Item -ItemType Directory -Force "${{ github.workspace }}\vcpkg-cache" | Out-Null
+
+      - name: Restore vcpkg binary cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}\vcpkg-cache
+          key: vcpkg-${{ matrix.platform }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'vcpkg-triplets/**') }}
+          restore-keys: |
+            vcpkg-${{ matrix.platform }}-
+
+      - name: Restore NuGet packages
+        run: msbuild CbxConverterEx.sln -t:restore -p:RestorePackagesConfig=true -nologo -v:minimal
+
+      - name: Build
+        run: msbuild CbxConverterEx.sln -p:Configuration=${{ matrix.configuration }} -p:Platform=${{ matrix.platform }} -m -nologo -v:minimal
+
+      - name: Upload application
+        uses: actions/upload-artifact@v4
+        with:
+          name: CbxConverterEx-${{ matrix.platform }}-${{ github.sha }}
+          path: |
+            bin/${{ matrix.platform }}/${{ matrix.configuration }}/
+            !bin/${{ matrix.platform }}/${{ matrix.configuration }}/*.pdb
+            !bin/${{ matrix.platform }}/${{ matrix.configuration }}/*.lib
+            !bin/${{ matrix.platform }}/${{ matrix.configuration }}/*.exp
+            !bin/${{ matrix.platform }}/${{ matrix.configuration }}/*.winmd
+          if-no-files-found: error
